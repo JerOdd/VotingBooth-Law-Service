@@ -27,7 +27,9 @@ public class LawServiceTests {
     @Test
     void getLaws() {
         UUID lawId = UUID.randomUUID();
-        when(lawRepository.findAll()).thenReturn(List.of(new Law(lawId)));
+        Law law = mock(Law.class);
+        when(law.getId()).thenReturn(lawId);
+        when(lawRepository.findAll()).thenReturn(List.of(law));
 
         LawsResponse response = lawService.getLaws();
 

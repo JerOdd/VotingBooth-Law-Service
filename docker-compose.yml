@@ -1,12 +1,13 @@
-version: '3.8'
-
+# Local dependencies for the job and the API: Postgres, plus SeaweedFS as an S3-compatible store standing in for OVH Object Storage.
+# (MinIO no longer publishes public Docker images.)
 services:
   postgres:
     image: postgres:16
     container_name: law-postgres
     restart: always
+    # 5434 on the host: 5432 is often taken by a native Postgres, and representative-service uses 5433.
     ports:
-      - "5432:5432"
+      - "5434:5432"
     environment:
       POSTGRES_DB: laws
       POSTGRES_USER: postgres
@@ -14,5 +15,38 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
+  s3:
+    image: chrislusf/seaweedfs:4.48
+    container_name: law-s3
+    restart: always
+    # SeaweedFS rejects signed requests unless an identity is configured, even locally.
+    # The file is written at startup, so nothing has to be mounted from the project folder.
+    environment:
+      S3_IDENTITY: >-
+        {"identities": [{"name": "local",
+                         "credentials": [{"accessKey": "local", "secretKey": "local-secret"}],
+                         "actions": ["Admin", "Read", "Write", "List", "Tagging"]}]}
+    entrypoint: ["sh", "-c", "echo \"$$S3_IDENTITY\" > /tmp/s3.json && exec weed server -s3 -s3.config=/tmp/s3.json -dir=/data"]
+    # 9001 on the host: representative-service's S3 already uses 9000.
+    ports:
+      - "9001:8333"
+    volumes:
+      - s3-data:/data
+
+  # Creates the raw bucket with versioning on, as it must be on OVH.
+  s3-init:
+    image: amazon/aws-cli:2.27.50
+    depends_on:
+      - s3
+    environment:
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local-secret
+      AWS_DEFAULT_REGION: us-east-1
+    entrypoint: >
+      sh -c "until aws --endpoint-url http://s3:8333 s3api list-buckets > /dev/null 2>&1; do sleep 1; done;
+             aws --endpoint-url http://s3:8333 s3api create-bucket --bucket law-raw || true;
+             aws --endpoint-url http://s3:8333 s3api put-bucket-versioning --bucket law-raw --versioning-configuration Status=Enabled"
+
 volumes:
   postgres-data:
+  s3-data:
