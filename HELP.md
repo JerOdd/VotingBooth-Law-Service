@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'com.votingbooth.law-module' is invalid and this project uses 'com.votingbooth.law_api' instead.
+* The original package name 'com.votingbooth.law-module' is invalid and this project uses 'com.votingbooth.law.api' instead.
 
 # Getting Started
 

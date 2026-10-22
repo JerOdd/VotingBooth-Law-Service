@@ -1,0 +1,3 @@
+CREATE TABLE laws (
+    id UUID PRIMARY KEY
+);

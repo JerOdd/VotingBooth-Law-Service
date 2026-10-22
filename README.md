@@ -1,2 +1,2 @@
-# VotingBooth-Law
-Law Module for VotingBooth
+# law-service
+Law Service for VotingBooth

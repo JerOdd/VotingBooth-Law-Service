@@ -9,17 +9,18 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.votingbooth</groupId>
-	<artifactId>law-module</artifactId>
+	<artifactId>law-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>law-module</name>
-	<description>Law Module for VotingBooth</description>
+	<packaging>pom</packaging>
+	<name>law-service</name>
+	<description>Law Service for VotingBooth</description>
 	<modules>
-		<module>law-api</module>
-		<module>law-listener</module>
-		<module>law-scheduler</module>
+		<module>core</module>
+		<module>api</module>
+		<module>job</module>
 	</modules>
 	<properties>
-		<java.version>17</java.version>
+		<java.version>21</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -33,14 +34,5 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>
