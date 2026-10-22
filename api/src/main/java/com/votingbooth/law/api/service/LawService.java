@@ -15,9 +15,11 @@ public class LawService {
     }
 
     public LawsResponse getLaws() {
-        return new LawsResponse(lawRepository.findAll().stream()
-                .map(law -> new LawDto(law.getId()))
-                .toList());
+        return new LawsResponse(
+            lawRepository.findAll().stream()
+            .map(law -> new LawDto(law.getId()))
+            .toList()
+        );
     }
 
 }
