@@ -1,6 +1,7 @@
 package com.votingbooth.law.core.model.entity;
 
-// Where a law stands in the parliamentary procedure. Derived from the dossier's acts by the job.
+// Where a law stands in the parliamentary procedure. Derived from the dossier's acts by the job,
+// except STALLED, which depends on today's date: never stored, the API derives it from last_act_date.
 public enum LawStatus {
     DEPOSITED,
     IN_COMMITTEE,
@@ -13,5 +14,6 @@ public enum LawStatus {
     PROMULGATED,
     REJECTED,
     WITHDRAWN,
-    LAPSED
+    LAPSED,
+    STALLED
 }
